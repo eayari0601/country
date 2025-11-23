@@ -29,7 +29,10 @@ class _CountryDetailScreenState extends State<CountryDetailScreen> {
                 color: Colors.grey[300],
               ),
               child: widget.country.flag.isNotEmpty
-                  ? Image.network(widget.country.flag, fit: BoxFit.contain)
+                  ? Hero(
+                      tag: 'flag_${widget.country.code}',
+                      child: Image.network(widget.country.flag, fit: BoxFit.contain),
+                    )
                   : const Icon(Icons.flag, size: 80),
             ),
             const SizedBox(height: 20),
