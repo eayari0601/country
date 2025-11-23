@@ -17,58 +17,57 @@ class _CountryDetailScreenState extends State<CountryDetailScreen> {
       appBar: AppBar(
         title: Text(widget.country.name),
       ),
-      body: Center(
-        child: Text(
-          'Details for ${widget.country.name}',
-          style: const TextStyle(fontSize: 20),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Container(
+              height: 200,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: Colors.grey[300],
+              ),
+              child: widget.country.flag.isNotEmpty
+                  ? Image.network(widget.country.flag, fit: BoxFit.contain)
+                  : const Icon(Icons.flag, size: 80),
+            ),
+            const SizedBox(height: 20),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    _buildInfoRow('Country Name', widget.country.name),
+                    _buildInfoRow('Capital', widget.country.capital),
+                    _buildInfoRow('Region', widget.country.region),
+                    _buildInfoRow('Population', widget.country.population.toString()),
+                    _buildInfoRow('Country Code', widget.country.code),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
-}
-Widget _buildInfoCard(String title, List<Widget> children) {
-  return Card(
-    child: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
         children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+          SizedBox(
+            width: 120,
+            child: Text(
+              '$label:',
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(height: 12),
-          ...children,
+          Expanded(child: Text(value)),
         ],
       ),
-    ),
-  );
-}
-Widget _buildInfoRow(String label, String value) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 4),
-    child: Row(
-      children: [
-        SizedBox(
-          width: 100,
-          child: Text(
-            '$label:',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-        ),
-        Expanded(child: Text(value)),
-      ],
-    ),
-  );
-}
-String _formatNumber(int number) {
-  if (number >= 1000000) {
-    return '${(number / 1000000).toStringAsFixed(1)}M';
-  } else if (number >= 1000) {
-    return '${(number / 1000).toStringAsFixed(1)}K';
+    );
   }
-  return number.toString();
 }
