@@ -24,7 +24,7 @@ class CountryProvider with ChangeNotifier {
       _countries = await CountryService().getAllCountries();
       _error = '';
     } catch (e) {
-      _error = 'Failed to load countries';
+      _error = 'Failed to load countries: $e';
       _countries = []; 
     }
 
