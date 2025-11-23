@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/country.dart';
 import '../services/country_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum SortOption { nameAsc, nameDesc, populationAsc, populationDesc }
 
@@ -73,6 +73,9 @@ class CountryProvider with ChangeNotifier {
     _sort = option;
     notifyListeners();
   }
+
+  List<Country> get favoriteCountries =>
+      _countries.where((c) => _favorites.contains(c.code)).toList();
 
   bool isFavorite(String code) => _favorites.contains(code);
 
