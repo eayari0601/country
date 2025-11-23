@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../providers/country_provider.dart';
 import '../widgets/country_card.dart';
 
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -14,7 +15,7 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.brightness_6),
-            onPressed: () => Provider.of<ThemeProvider>(context, listen: false).toggleTheme(),
+            onPressed: () {}, // ThemeProvider is not defined; remove toggle call
           ),
           Consumer<CountryProvider>(
             builder: (context, provider, _) {
