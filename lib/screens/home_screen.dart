@@ -16,7 +16,6 @@ class HomeScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Action à définir si nécessaire
         },
         child: const Icon(Icons.refresh),
       ),
