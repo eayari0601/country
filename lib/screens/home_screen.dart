@@ -11,6 +11,26 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Country Explorer'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.brightness_6),
+            onPressed: () => Provider.of<ThemeProvider>(context, listen: false).toggleTheme(),
+          ),
+          Consumer<CountryProvider>(
+            builder: (context, provider, _) {
+              return PopupMenuButton<SortOption>(
+                onSelected: provider.setSort,
+                icon: const Icon(Icons.sort),
+                itemBuilder: (context) => const [
+                  PopupMenuItem(value: SortOption.nameAsc, child: Text('Name ↑')),
+                  PopupMenuItem(value: SortOption.nameDesc, child: Text('Name ↓')),
+                  PopupMenuItem(value: SortOption.populationAsc, child: Text('Population ↑')),
+                  PopupMenuItem(value: SortOption.populationDesc, child: Text('Population ↓')),
+                ],
+              );
+            },
+          ),
+        ],
       ),
       body: Consumer<CountryProvider>(
         builder: (context, countryProvider, child) {
@@ -45,17 +65,38 @@ class HomeScreen extends StatelessWidget {
             );
           }
 
-          return GridView(
-            padding: const EdgeInsets.all(16),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
-              childAspectRatio: 0.7, // was 0.8; taller tiles
-            ),
+          return Column(
             children: [
-              for (final country in countryProvider.countries)
-                CountryCard(country: country),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: TextField(
+                  onChanged: countryProvider.setQuery,
+                  decoration: const InputDecoration(
+                    hintText: 'Search by name or capital',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: countryProvider.loadCountries,
+                  child: GridView.builder(
+                    padding: const EdgeInsets.all(16),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      childAspectRatio: 0.75,
+                    ),
+                    itemCount: countryProvider.visibleCountries.length,
+                    itemBuilder: (context, index) {
+                      final country = countryProvider.visibleCountries[index];
+                      return CountryCard(country: country);
+                    },
+                  ),
+                ),
+              ),
             ],
           );
         },
