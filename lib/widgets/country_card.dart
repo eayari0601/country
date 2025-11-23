@@ -48,13 +48,40 @@ class CountryCard extends StatelessWidget {
                     right: 4,
                     child: Consumer<CountryProvider>(
                       builder: (context, provider, _) {
-                        final fav = provider.isFavorite(country.code);
+                        final isFav = provider.isFavorite(country.code);
                         return IconButton(
                           icon: Icon(
-                            fav ? Icons.favorite : Icons.favorite_border,
-                            color: fav ? Colors.red : Colors.white,
+                            isFav ? Icons.favorite : Icons.favorite_border,
+                            color: isFav ? Colors.red : Colors.white,
                           ),
-                          onPressed: () => provider.toggleFavorite(country.code),
+                          onPressed: () async {
+                            final wasFav = provider.isFavorite(country.code);
+                            await provider.toggleFavorite(country.code);
+                            final nowFav = provider.isFavorite(country.code);
+
+                            final snackBar = SnackBar(
+                              content: Text(
+                                nowFav
+                                    ? 'Ajouté aux favoris: ${country.name}'
+                                    : 'Retiré des favoris: ${country.name}',
+                              ),
+                              duration: const Duration(seconds: 4),
+                              action: nowFav
+                                  ? SnackBarAction(
+                                      label: 'Annuler',
+                                      onPressed: () async {
+                                        // Annuler l’ajout: retirer des favoris
+                                        if (provider.isFavorite(country.code)) {
+                                          await provider.toggleFavorite(country.code);
+                                        }
+                                      },
+                                    )
+                                  : null,
+                            );
+                            ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(snackBar);
+                          },
                         );
                       },
                     ),
