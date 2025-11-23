@@ -24,16 +24,41 @@ class CountryCard extends StatelessWidget {
           children: [
             Flexible(
               flex: 2,
-              child: country.flag.isNotEmpty
-                  ? Image.network(
-                      country.flag,
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                    )
-                  : Container(
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.flag, size: 40),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: country.flag.isNotEmpty
+                        ? Hero(
+                            tag: 'flag_${country.code}',
+                            child: Image.network(
+                              country.flag,
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                            ),
+                          )
+                        : Container(
+                            color: Colors.grey[300],
+                            child: const Icon(Icons.flag, size: 40),
+                          ),
+                  ),
+                  Positioned(
+                    top: 4,
+                    right: 4,
+                    child: Consumer<CountryProvider>(
+                      builder: (context, provider, _) {
+                        final fav = provider.isFavorite(country.code);
+                        return IconButton(
+                          icon: Icon(
+                            fav ? Icons.favorite : Icons.favorite_border,
+                            color: fav ? Colors.red : Colors.white,
+                          ),
+                          onPressed: () => provider.toggleFavorite(country.code),
+                        );
+                      },
                     ),
+                  ),
+                ],
+              ),
             ),
             Flexible(
               flex: 1,
