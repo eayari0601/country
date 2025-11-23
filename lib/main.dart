@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:country/providers/country_provider.dart';
-import 'package:country/screens/home_screen.dart';
+import 'providers/country_provider.dart';
+import 'providers/theme_provider.dart';
+import 'screens/home_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -12,20 +14,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-     
-      create: (context) => CountryProvider(),
-      child: MaterialApp(
-        title: 'Country Explorer',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            brightness: Brightness.dark,
-            seedColor: Colors.blue,
-          ),
-        ),
-       
-        home: const HomeScreen(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => CountryProvider()),
+      ],
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialApp(
+            title: 'Country Explorer',
+            debugShowCheckedModeBanner: false,
+            theme: themeProvider.currentTheme,
+            home: const HomeScreen(),
+          );
+        },
       ),
     );
   }
