@@ -51,7 +51,7 @@ class HomeScreen extends StatelessWidget {
               crossAxisCount: 2,
               mainAxisSpacing: 16,
               crossAxisSpacing: 16,
-              childAspectRatio: 0.8,
+              childAspectRatio: 0.7, // was 0.8; taller tiles
             ),
             children: [
               for (final country in countryProvider.countries)

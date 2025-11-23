@@ -22,7 +22,7 @@ class CountryCard extends StatelessWidget {
         elevation: 4,
         child: Column(
           children: [
-            Expanded(
+            Flexible(
               flex: 2,
               child: country.flag.isNotEmpty
                   ? Image.network(
@@ -35,11 +35,12 @@ class CountryCard extends StatelessWidget {
                       child: const Icon(Icons.flag, size: 40),
                     ),
             ),
-            Expanded(
+            Flexible(
               flex: 1,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
@@ -49,12 +50,16 @@ class CountryCard extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                       textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'Capital: ${country.capital}',
                       style: const TextStyle(fontSize: 12),
                       textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
