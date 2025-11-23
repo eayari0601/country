@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/country_provider.dart';
 import '../widgets/country_card.dart';
+import '../providers/theme_provider.dart';
+import 'favorites_screen.dart';
 
 
 class HomeScreen extends StatelessWidget {
@@ -15,7 +17,7 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.favorite),
-            tooltip: 'Favoris',
+            tooltip: 'Favorites',
             onPressed: () {
               Navigator.push(
                 context,
@@ -27,7 +29,7 @@ class HomeScreen extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.brightness_6),
-            tooltip: 'Changer thème',
+            tooltip: 'Toggle Theme',
             onPressed: () => Provider.of<ThemeProvider>(context, listen: false).toggleTheme(),
           ),
         ],
