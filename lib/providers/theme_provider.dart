@@ -32,7 +32,7 @@ class ThemeProvider with ChangeNotifier {
     cardTheme: CardTheme(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      color: Colors.grey[800],
+      color: const Color.fromARGB(255, 27, 26, 26),
     ),
   );
 
