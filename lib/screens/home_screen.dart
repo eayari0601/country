@@ -17,7 +17,7 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.favorite),
-            tooltip: 'Favorites',
+            tooltip: 'Favoris',
             onPressed: () {
               Navigator.push(
                 context,
@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.brightness_6),
-            tooltip: 'Toggle Theme',
+            tooltip: 'Changer thème',
             onPressed: () => Provider.of<ThemeProvider>(context, listen: false).toggleTheme(),
           ),
         ],
@@ -71,13 +71,49 @@ class HomeScreen extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: TextField(
-                  onChanged: countryProvider.setQuery,
-                  decoration: const InputDecoration(
-                    hintText: 'Search by name or capital',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(),
-                  ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        onChanged: countryProvider.setQuery,
+                        decoration: const InputDecoration(
+                          hintText: 'Search by name or capital',
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    DropdownButton<SortOption>(
+                      value: countryProvider.visibleCountries.isEmpty
+                          ? SortOption.nameAsc
+                          : null,
+                      items: const [
+                        DropdownMenuItem(
+                          value: SortOption.nameAsc,
+                          child: Text('Name ↑'),
+                        ),
+                        DropdownMenuItem(
+                          value: SortOption.nameDesc,
+                          child: Text('Name ↓'),
+                        ),
+                        DropdownMenuItem(
+                          value: SortOption.populationAsc,
+                          child: Text('Pop. ↑'),
+                        ),
+                        DropdownMenuItem(
+                          value: SortOption.populationDesc,
+                          child: Text('Pop. ↓'),
+                        ),
+                      ],
+                      onChanged: (opt) {
+                        if (opt != null) {
+                          countryProvider.setSort(opt);
+                        }
+                      },
+                      hint: const Text('Sort'),
+                    ),
+                  ],
                 ),
               ),
               Expanded(

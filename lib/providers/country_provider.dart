@@ -43,6 +43,8 @@ class CountryProvider with ChangeNotifier {
     return list;
   }
 
+  String get query => _query;
+
   CountryProvider() {
     loadCountries();
     _loadFavorites();

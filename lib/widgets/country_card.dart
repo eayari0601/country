@@ -9,6 +9,48 @@ class CountryCard extends StatelessWidget {
 
   const CountryCard({required this.country, super.key});
 
+  Widget _highlight(BuildContext context, String source, String query, TextStyle style) {
+    if (query.isEmpty) {
+      return Text(
+        source,
+        style: style,
+        textAlign: TextAlign.center,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      );
+    }
+    final lowerSource = source.toLowerCase();
+    final lowerQuery = query.toLowerCase();
+    final start = lowerSource.indexOf(lowerQuery);
+    if (start == -1) {
+      return Text(
+        source,
+        style: style,
+        textAlign: TextAlign.center,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+      );
+    }
+    final end = start + query.length;
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return RichText(
+      textAlign: TextAlign.center,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+      text: TextSpan(
+        children: [
+          TextSpan(text: source.substring(0, start), style: style),
+          TextSpan(
+            text: source.substring(start, end),
+            style: style.copyWith(color: primary),
+          ),
+          TextSpan(text: source.substring(end), style: style),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -48,40 +90,13 @@ class CountryCard extends StatelessWidget {
                     right: 4,
                     child: Consumer<CountryProvider>(
                       builder: (context, provider, _) {
-                        final isFav = provider.isFavorite(country.code);
+                        final fav = provider.isFavorite(country.code);
                         return IconButton(
                           icon: Icon(
-                            isFav ? Icons.favorite : Icons.favorite_border,
-                            color: isFav ? Colors.red : Colors.white,
+                            fav ? Icons.favorite : Icons.favorite_border,
+                            color: fav ? Colors.blue : Colors.white,
                           ),
-                          onPressed: () async {
-                            final wasFav = provider.isFavorite(country.code);
-                            await provider.toggleFavorite(country.code);
-                            final nowFav = provider.isFavorite(country.code);
-
-                            final snackBar = SnackBar(
-                              content: Text(
-                                nowFav
-                                    ? 'Ajouté aux favoris: ${country.name}'
-                                    : 'Retiré des favoris: ${country.name}',
-                              ),
-                              duration: const Duration(seconds: 4),
-                              action: nowFav
-                                  ? SnackBarAction(
-                                      label: 'Annuler',
-                                      onPressed: () async {
-                                        // Annuler l’ajout: retirer des favoris
-                                        if (provider.isFavorite(country.code)) {
-                                          await provider.toggleFavorite(country.code);
-                                        }
-                                      },
-                                    )
-                                  : null,
-                            );
-                            ScaffoldMessenger.of(context)
-                              ..hideCurrentSnackBar()
-                              ..showSnackBar(snackBar);
-                          },
+                          onPressed: () => provider.toggleFavorite(country.code),
                         );
                       },
                     ),
@@ -93,29 +108,28 @@ class CountryCard extends StatelessWidget {
               flex: 1,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      country.name,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Capital: ${country.capital}',
-                      style: const TextStyle(fontSize: 12),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+                child: Consumer<CountryProvider>(
+                  builder: (context, provider, _) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _highlight(
+                          context,
+                          country.name,
+                          provider.query,
+                          const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 4),
+                        _highlight(
+                          context,
+                          'Capital: ${country.capital}',
+                          provider.query,
+                          const TextStyle(fontSize: 12),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ),
