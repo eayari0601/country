@@ -14,22 +14,21 @@ class HomeScreen extends StatelessWidget {
         title: const Text('Country Explorer'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.brightness_6),
-            onPressed: () {}, // ThemeProvider is not defined; remove toggle call
-          ),
-          Consumer<CountryProvider>(
-            builder: (context, provider, _) {
-              return PopupMenuButton<SortOption>(
-                onSelected: provider.setSort,
-                icon: const Icon(Icons.sort),
-                itemBuilder: (context) => const [
-                  PopupMenuItem(value: SortOption.nameAsc, child: Text('Name ↑')),
-                  PopupMenuItem(value: SortOption.nameDesc, child: Text('Name ↓')),
-                  PopupMenuItem(value: SortOption.populationAsc, child: Text('Population ↑')),
-                  PopupMenuItem(value: SortOption.populationDesc, child: Text('Population ↓')),
-                ],
+            icon: const Icon(Icons.favorite),
+            tooltip: 'Favoris',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const FavoritesScreen(),
+                ),
               );
             },
+          ),
+          IconButton(
+            icon: const Icon(Icons.brightness_6),
+            tooltip: 'Changer thème',
+            onPressed: () => Provider.of<ThemeProvider>(context, listen: false).toggleTheme(),
           ),
         ],
       ),
