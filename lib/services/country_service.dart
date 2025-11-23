@@ -6,7 +6,7 @@ class CountryService {
   Future<List<Country>> getAllCountries() async {
     try {
       final response = await http.get(
-        Uri.parse('https://www.apicountries.com/'),
+        Uri.parse('https://www.apicountries.com/api/countries'),
       );
 
       if (response.statusCode == 200) {
