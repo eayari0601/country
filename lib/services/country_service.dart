@@ -6,12 +6,11 @@ class CountryService {
   Future<List<Country>> getAllCountries() async {
     try {
       final response = await http.get(
-        Uri.parse('https://www.apicountries.com/'),
+        Uri.parse('https://restcountries.com/v3.1/all'),
       );
 
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        final List<dynamic> countriesData = data['data'];
+        final List<dynamic> countriesData = json.decode(response.body);
         
         List<Country> countries = [];
         for (var countryData in countriesData) {
@@ -19,7 +18,7 @@ class CountryService {
         }
         return countries;
       } else {
-        throw Exception('Failed to load countries');
+        throw Exception('Failed to load countries: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Failed to load countries: $e');

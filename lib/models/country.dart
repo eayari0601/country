@@ -17,12 +17,14 @@ class Country {
 
   factory Country.fromJson(Map<String, dynamic> json) {
     return Country(
-      name: json['name']['common'] ?? 'Unknown',
-      capital: (json['capital'] as List?)?.first ?? 'No capital',
-      flag: json['flags']['png'] ?? '',
+      name: json['name']?['common'] ?? 'Unknown',
+      capital: (json['capital'] as List?)?.isNotEmpty == true 
+          ? (json['capital'] as List).first 
+          : 'No capital',
+      flag: json['flags']?['png'] ?? json['flags']?['svg'] ?? '',
       region: json['region'] ?? 'Unknown',
       population: json['population'] ?? 0,
-      code: json['cca3'] ?? '',
+      code: json['cca3'] ?? json['cca2'] ?? '',
     );
   }
 }
