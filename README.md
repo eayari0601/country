@@ -1,16 +1,41 @@
-# country
+🌍 Country  - Flutter App
+Une application mobile Flutter permettant d'explorer les pays du monde avec leurs informations détaillées.
 
-A new Flutter project.
+📱 Fonctionnalités
+Fonctionnalités principales
+Liste des pays : Affichage en grille des drapeaux et noms des pays
 
-## Getting Started
+Détails complets : Navigation vers une page détaillée avec informations complètes
 
-This project is a starting point for a Flutter application.
+Actualisation : Pull-to-refresh pour mettre à jour les données
 
-A few resources to get you started if this is your first Flutter project:
+Gestion d'état : Utilisation de Provider pour la gestion d'état
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Fonctionnalités bonus
+🔍 Recherche de pays
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+⭐ Favoris avec stockage local
+
+🌙 Dark/Light theme
+
+🔄 Options de tri
+
+🎨 Animations personnalisées
+
+🛠️ Technologies utilisées
+Flutter - Framework de développement mobile
+
+Dart - Langage de programmation
+
+Provider - Gestion d'état
+
+HTTP - Consommation d'API REST
+
+API Countries - https://www.apicountries.com/
+
+📋 Prérequis
+Flutter SDK (version 3.0 ou supérieure)
+
+Dart SDK
+
+Un émulateur ou appareil physique
