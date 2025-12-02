@@ -96,7 +96,11 @@ class CountryCard extends StatelessWidget {
                             fav ? Icons.favorite : Icons.favorite_border,
                             color: fav ? Colors.blue : Colors.white,
                           ),
-                          onPressed: () => provider.toggleFavorite(country.code),
+                          onPressed: () => provider.toggleFavorite(
+                            context, 
+                            country.code,
+                            country.name,
+                          ),
                         );
                       },
                     ),

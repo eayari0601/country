@@ -81,15 +81,45 @@ class CountryProvider with ChangeNotifier {
 
   bool isFavorite(String code) => _favorites.contains(code);
 
-  Future<void> toggleFavorite(String code) async {
-    if (_favorites.contains(code)) {
+  Future<void> toggleFavorite(BuildContext context, String code, String countryName) async {
+    bool wasFavorite = _favorites.contains(code);
+    
+    if (wasFavorite) {
       _favorites.remove(code);
     } else {
       _favorites.add(code);
     }
+    
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('favorites', _favorites.toList());
+    
+    // Afficher une snackbar avec option "Annuler"
+    ScaffoldMessenger.of(context).hideCurrentSnackBar(); // Cacher les snackbars précédentes
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          wasFavorite 
+            ? '$countryName retiré des favoris' 
+            : '$countryName ajouté aux favoris',
+        ),
+        duration: const Duration(seconds: 3), // Durée d'affichage
+        action: SnackBarAction(
+          label: 'Annuler',
+          onPressed: () async {
+            // Annuler l'action
+            if (wasFavorite) {
+              _favorites.add(code);
+            } else {
+              _favorites.remove(code);
+            }
+            notifyListeners();
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setStringList('favorites', _favorites.toList());
+          },
+        ),
+      ),
+    );
   }
 
   Future<void> _loadFavorites() async {
