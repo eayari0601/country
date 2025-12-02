@@ -12,6 +12,7 @@ class CountryProvider with ChangeNotifier {
   String _query = '';
   Set<String> _favorites = {};
   SortOption _sort = SortOption.nameAsc;
+  SortOption get sort => _sort; // Ajoutez ce getter
 
   List<Country> get countries => _countries;
   bool get isLoading => _isLoading;

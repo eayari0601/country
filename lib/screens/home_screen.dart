@@ -5,7 +5,6 @@ import '../widgets/country_card.dart';
 import '../providers/theme_provider.dart';
 import 'favorites_screen.dart';
 
-
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -17,36 +16,22 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.favorite),
-            tooltip: 'Favoris',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const FavoritesScreen(),
-                ),
-              );
-            },
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const FavoritesScreen()),
+            ),
           ),
           IconButton(
             icon: const Icon(Icons.brightness_6),
-            tooltip: 'Changer thème',
             onPressed: () => Provider.of<ThemeProvider>(context, listen: false).toggleTheme(),
           ),
         ],
       ),
+      drawer: _buildSimpleDrawer(context), // Drawer simplifié
       body: Consumer<CountryProvider>(
         builder: (context, countryProvider, child) {
           if (countryProvider.isLoading) {
-            return const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
-                  Text('Loading countries...'),
-                ],
-              ),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (countryProvider.hasError) {
@@ -54,13 +39,10 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.error, size: 64),
-                  const SizedBox(height: 16),
-                  Text('Error: ${countryProvider.error}'),
-                  const SizedBox(height: 16),
+                  Text('Erreur: ${countryProvider.error}'),
                   ElevatedButton(
                     onPressed: countryProvider.loadCountries,
-                    child: const Text('Try Again'),
+                    child: const Text('Réessayer'),
                   ),
                 ],
               ),
@@ -69,51 +51,16 @@ class HomeScreen extends StatelessWidget {
 
           return Column(
             children: [
+              // Barre de recherche seulement
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        onChanged: countryProvider.setQuery,
-                        decoration: const InputDecoration(
-                          hintText: 'Search by name or capital',
-                          prefixIcon: Icon(Icons.search),
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    DropdownButton<SortOption>(
-                      value: countryProvider.visibleCountries.isEmpty
-                          ? SortOption.nameAsc
-                          : null,
-                      items: const [
-                        DropdownMenuItem(
-                          value: SortOption.nameAsc,
-                          child: Text('Name ↑'),
-                        ),
-                        DropdownMenuItem(
-                          value: SortOption.nameDesc,
-                          child: Text('Name ↓'),
-                        ),
-                        DropdownMenuItem(
-                          value: SortOption.populationAsc,
-                          child: Text('Pop. ↑'),
-                        ),
-                        DropdownMenuItem(
-                          value: SortOption.populationDesc,
-                          child: Text('Pop. ↓'),
-                        ),
-                      ],
-                      onChanged: (opt) {
-                        if (opt != null) {
-                          countryProvider.setSort(opt);
-                        }
-                      },
-                      hint: const Text('Sort'),
-                    ),
-                  ],
+                child: TextField(
+                  onChanged: countryProvider.setQuery,
+                  decoration: const InputDecoration(
+                    hintText: 'Rechercher un pays',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(),
+                  ),
                 ),
               ),
               Expanded(
@@ -143,6 +90,90 @@ class HomeScreen extends StatelessWidget {
         onPressed: () => Provider.of<CountryProvider>(context, listen: false).loadCountries(),
         child: const Icon(Icons.refresh),
       ),
+    );
+  }
+
+  // Drawer simplifié
+  Widget _buildSimpleDrawer(BuildContext context) {
+    return Drawer(
+      child: Column(
+        children: [
+          const DrawerHeader(
+            child: Text(
+              'Options de tri',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Text('Choisissez un mode de tri:', style: TextStyle(fontSize: 16)),
+          const SizedBox(height: 20),
+          // Options de tri
+          _buildSortOption(
+            context,
+            SortOption.nameAsc,
+            'Nom (A → Z)',
+            Icons.sort_by_alpha,
+          ),
+          _buildSortOption(
+            context,
+            SortOption.nameDesc,
+            'Nom (Z → A)',
+            Icons.sort_by_alpha,
+          ),
+          _buildSortOption(
+            context,
+            SortOption.populationAsc,
+            'Population (croissante)',
+            Icons.arrow_upward,
+          ),
+          _buildSortOption(
+            context,
+            SortOption.populationDesc,
+            'Population (décroissante)',
+            Icons.arrow_downward,
+          ),
+          const Divider(),
+          // Statistiques simples
+          Consumer<CountryProvider>(
+            builder: (context, provider, child) {
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Text('Pays: ${provider.visibleCountries.length}/${provider.countries.length}'),
+                    Text('Favoris: ${provider.favoriteCountries.length}'),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Widget pour chaque option de tri
+  Widget _buildSortOption(
+    BuildContext context,
+    SortOption option,
+    String title,
+    IconData icon,
+  ) {
+    return Consumer<CountryProvider>(
+      builder: (context, provider, child) {
+        final isSelected = provider.visibleCountries.isNotEmpty && provider.sort == option;
+        
+        return ListTile(
+          leading: Icon(icon, color: isSelected ? Colors.blue : null),
+          title: Text(title),
+          trailing: isSelected ? const Icon(Icons.check, color: Colors.blue) : null,
+          tileColor: isSelected ? Colors.blue.withOpacity(0.1) : null,
+          onTap: () {
+            provider.setSort(option);
+            Navigator.pop(context); // Ferme le drawer
+          },
+        );
+      },
     );
   }
 }
